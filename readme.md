@@ -1,6 +1,6 @@
 # Password Steward
 
-Password Steward is an application for generating and storing passwords for your accounts on different websites and softwares.
+Password Steward is an application to generate simple or complex passwords to meet the standards that the website or software you're using requires and store them for further access.
 
 ---
 
@@ -29,7 +29,11 @@ sth sth
 reference tutorials/codes > links
 collaborators/team members
 
+* Hillary Nyakundi's article on freecodecamp (https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/)
+
 ---
 ## License
 
 Licensed under [GNU GPLv3](LICENSE).
+
+&copy; Chen Yi-Hsuan
