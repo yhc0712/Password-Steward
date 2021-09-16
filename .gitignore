@@ -4,4 +4,12 @@ pw_generator.ipynb
 PWS_MainUI.ui
 __pycache__/PWS_Main.cpython-39.pyc
 __pycache__/PWS_Main_logic.cpython-39.pyc
-
+__pycache__/StartUp.cpython-39.pyc
+__pycache__/Register.cpython-39.pyc
+__pycache__/Login.cpython-39.pyc
+trial/trial.db
+data/sqlPWS.db
+data/registry.db
+Register_ui.ui
+Login_ui.ui
+123.py
