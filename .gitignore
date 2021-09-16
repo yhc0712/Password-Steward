@@ -13,3 +13,7 @@ data/registry.db
 Register_ui.ui
 Login_ui.ui
 123.py
+PWS_Main_logic.py
+test.py
+__pycache__/Menu.cpython-39.pyc
+Menu.ui

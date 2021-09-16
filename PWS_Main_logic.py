@@ -1,14 +1,20 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
 from PWS_Main import *
 import StartUp
 import Register
+import Menu
 import validator as vd
 import sqlite3
 
 class StartUp(QMainWindow, StartUp.Ui_MainWindow):
     def __init__(self, parent = None):
+        from os import mkdir
         super(StartUp, self).__init__(parent)
+        try:
+            mkdir('data')
+        except FileExistsError:
+            pass
         self.conn = sqlite3.connect('data/registry.db')
         self.curs = self.conn.cursor()
         try:
@@ -29,14 +35,25 @@ class StartUp(QMainWindow, StartUp.Ui_MainWindow):
         self.window2.show()
 
     def _login(self):
-        uid = self.le_account.text().casefold()
+        global current_user
+        current_user = self.le_account.text().casefold()
         pw = self.le_password.text()
-        if True:
-            self.window2 = Core()
-            self.conn.commit()
-            self.conn.close()
-            self.close()
-            self.window2.show()
+
+        # if uid not found in db --> "no user found"
+        user_list = [i for i in self.curs.execute('''SELECT username FROM registry''').fetchall()[0]]
+        if current_user not in user_list:
+            self.le_account.setText('User not found.')
+        # if uid found but bad pw --> "incorrect password"
+        else:
+            users_pw = self.curs.execute('''SELECT pw FROM registry WHERE username = (?)''', tuple([current_user])).fetchone()[0]
+            if pw != users_pw:
+                self.le_password.setText('Incorrect password.')
+            else:
+                self.window2 = Menu()
+                self.conn.commit()
+                self.conn.close()
+                self.close()
+                self.window2.show()
             
 class Register(QMainWindow, Register.Ui_MainWindow):
     def __init__(self, parent = None):
@@ -74,6 +91,24 @@ class Register(QMainWindow, Register.Ui_MainWindow):
             self.err_msg_user.setText('<html><head/><body><p><span style=" color:#ff0000;">Username already taken.</span></p></body></html>')        
             self.err_msg_pw.setText('')
 
+class Menu(QWidget, Menu.Ui_Form):
+    def __init__(self, parent = None):
+        super(Menu, self).__init__(parent)
+        self.setupUi(self)
+        self.window2 = None
+        #-------register buttons--------
+        self.pb_gen.clicked.connect(self._gen)
+        self.pb_lu.clicked.connect(self._lookup)
+    #------define functions---------
+    def _gen(self):
+        self.window2 = Core()
+        self.close()
+        self.window2.show()
+
+    def _lookup(self):
+        # to be coded
+        pass
+
 class Core(QMainWindow, Ui_MainWindow):
     def __init__(self, parent = None):
         super(Core, self).__init__(parent)
@@ -86,11 +121,13 @@ class Core(QMainWindow, Ui_MainWindow):
         except sqlite3.OperationalError:
             pass
         self.setupUi(self)
+        self.window2 = None
         # -----register the buttons below this line---------
         self.pb_quit.clicked.connect(self._close) # quit the application when clicked
         self.pb_run.clicked.connect(self._run)    # click to start password generation
         self.pb_save.clicked.connect(self._save)  # click to save the current app name, uid and password
         self.pb_copy.clicked.connect(self._copy)
+        self.pb_main_menu.clicked.connect(self._return)
     #--------define buttons functions below this line---------
     # to disconnect from the database and to close the application
     def _close(self):
@@ -144,7 +181,7 @@ class Core(QMainWindow, Ui_MainWindow):
                   self.appname_line.text().title(),
                   self.user_id.text().upper(),
                   self.pws_pw.text(),
-                  startup.le_account.text().casefold()
+                  current_user
                   )]
 
         if self.appname_line.text() == "":
@@ -171,6 +208,12 @@ class Core(QMainWindow, Ui_MainWindow):
     def _copy(self):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.pws_pw.text())
+
+    def _return(self):
+        self.window2 = Menu()
+        self.conn.close()
+        self.close()
+        self.window2.show()
 
 if __name__ == '__main__':
 
