@@ -16,15 +16,25 @@ Password Steward is an application to generate simple or complex passwords to me
 
 6. License
 
-## 1. How to install (Optional)
+## 1. How to install
 
-sth sth
+Clone the repository from [github](https://github.com/yhc0712/Passward-Steward)
 
+Start the program by executing `PWS_Main_logic.py`
+
+Or just click the `PWS.exe` to run the program.
 
 ## 2. How to use Password Steward
 
-sth sth
+Caution: the database used to store uid and password information is unencrypted due to my lack of knowledge of cryptography. 
 
+When you open the program for the first time, register an account so that your password. Password Steward requires a password for at least 4 digits. And you'd better not store your PWS's password in PWS.
+
+When you login PWS for the first time, go ahead and press Generate New Password and follow the instructions on the screen. Press **Run** to generate a password and press **Copy** to copy the generated password to your clipboard.
+    
+>!!! Remember to press **Save** button on the right hand side so that you can look up the password in the future. !!!
+
+If you want to look up your stored passwords, select **Lookup/Update** in the menu. There you can select your stored apps and select UIDs in case you have multiple UIDs for the same application. Press **Check** and your password stored in PWS then pops up in the *Password* line. Press **Update** to update the password, **Copy** to copy the password, and **Back** to return to the PWS menu.
 
 ## 3. Description
 
@@ -37,6 +47,7 @@ This application, Password Steward (PWS), was created as a final project of taki
 *   **random**
 *   **string**
 *   **sys**
+*   **math**
 
 #### Other Python Libraries used
 
@@ -48,7 +59,7 @@ This application, Password Steward (PWS), was created as a final project of taki
 
 *   **validator** : a module that helps validate user input to check whether the input serves the purposes of the questions asked, functions defined as follows:
 
-    1. ***val(question)*** : to determine whether a question is a yes/no question and whether the user's response meets the type of input variable requested by the question
+    1. ***val(question)*** : (used in building prototype) to determine whether a question is a yes/no question and whether the user's response meets the type of input variable requested by the question
 
         The function takes one parameter. *Question* is what the user reads before entering his/her response. The suffix of the *question* is used by this function to determine the type of answer it is looking for. Given the purpose of this project, if the suffix of the *question* is (Y/N), the function checks if the response is "y" or "n", regardless of its case. If not, the function checks if the response is a natural number.
 
@@ -60,7 +71,7 @@ This application, Password Steward (PWS), was created as a final project of taki
 
         `val("Do you need any napkins? (Y/N)")` if the user enters "y", the function returns `"Y"`.
 
-    2. ***pw_len_check(length, combination)*** : to determine whether the count of requested types of characters exceed the digits of the password, if so, ask the user to modify his/her response.
+    2. ***pw_len_check(length, combination)*** : (used in building prototype) to determine whether the count of requested types of characters exceed the digits of the password, if so, ask the user to modify his/her response.
     
         The function takes two parameters. *Length* is the digits of the password requested by the user. *Combination* is the number of types of characters (numbers, uppercase letters, lowercase letters, or symbols) the user needs.
 
@@ -115,11 +126,21 @@ Here is my concept layout when I first thought about a GUI for this application:
 
 * [Hillary Nyakundi's article on freecodecamp](https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/) taught me how to write a README
 
-* [Python GUI 程式設計 PyQt5 實戰 ISBN：9789864344741](https://www.books.com.tw/products/0010850077?sloc=main) as a reference book in Chinese about PyQt so that I can quickly use the things I need without learning the whole stuff
+* [Python GUI 程式設計 PyQt5 實戰 ISBN：9789864344741](https://www.books.com.tw/products/0010850077?sloc=main) as a reference book in Chinese about PyQt so that I can quickly use the things I need without learning the whole stuff. This book provides instructions based on PyQt5, thus I have devoted some time in porting from PyQt5 to PyQt6, which is what I used in my program.
 
 * [Stack Overflow question 1](https://stackoverflow.com/questions/55432518/pyqt5-passing-a-name-form-login-to-main-window)
 
 * [Stack Overflow question 2](https://stackoverflow.com/questions/11812000/login-dialog-pyqt)
+
+* [How to use PyQt MessageBox by Fahmida Yesmin](https://linuxhint.com/use-pyqt-qmessagebox/)
+
+* [Stack Overflow question 3](https://stackoverflow.com/questions/65735260/alternative-to-qmessagebox-yes-for-pyqt6)
+
+* [Codecademy SQL Cheatsheet](https://www.codecademy.com/learn/learn-sql/modules/learn-sql-manipulation/cheatsheet)
+
+* [Software icon](https://icon-icons.com/download/31761/ICO/512/)
+
+* [auto-py-to-exe](https://github.com/brentvollebregt/auto-py-to-exe/blob/master/README.md)
 
 ## 5. Knowledge gained
 

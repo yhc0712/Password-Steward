@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         MainWindow.setMinimumSize(QtCore.QSize(800, 600))
         MainWindow.setMaximumSize(QtCore.QSize(800, 600))
+        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
         font = QtGui.QFont()
         font.setFamily("Calibri")
         font.setPointSize(10)

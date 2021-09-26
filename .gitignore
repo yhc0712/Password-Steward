@@ -17,3 +17,8 @@ PWS_Main_logic.py
 test.py
 __pycache__/Menu.cpython-39.pyc
 Menu.ui
+lookup.ui
+first.db
+__pycache__/lookup.cpython-39.pyc
+.vscode/launch.json
+PWS_Main_logic.spec

@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(342, 250)
         MainWindow.setMinimumSize(QtCore.QSize(342, 250))
         MainWindow.setMaximumSize(QtCore.QSize(342, 250))
+        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -41,6 +42,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.label_2, 4, 0, 1, 1)
         self.le_pw = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.le_pw.setObjectName("le_pw")
+        self.le_pw.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.gridLayout.addWidget(self.le_pw, 5, 0, 1, 1)
         self.err_msg_user = QtWidgets.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
@@ -101,7 +103,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Password Steward - Register"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "PWS - Register"))
         self.label.setText(_translate("MainWindow", "Enter your username (case-insensitive):"))
         self.label_2.setText(_translate("MainWindow", "Enter your password (at least 4 digits):"))
         self.pb_cancel.setText(_translate("MainWindow", "Cancel"))

@@ -1,9 +1,10 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow, QMessageBox, QWidget
 from PWS_Main import *
 import StartUp
 import Register
 import Menu
+import lookup
 import validator as vd
 import sqlite3
 
@@ -26,6 +27,7 @@ class StartUp(QMainWindow, StartUp.Ui_MainWindow):
         #-----register buttons below this line------
         self.pb_register.clicked.connect(self._register)
         self.pb_login.clicked.connect(self._login)
+        self.le_password.selectionChanged.connect(self._echo)
     # ---------define button functions below this line ---------
     def _register(self):
         self.window2 = Register()
@@ -34,20 +36,28 @@ class StartUp(QMainWindow, StartUp.Ui_MainWindow):
         self.close()
         self.window2.show()
 
+    def _echo(self):
+        self.le_password.clear()
+        self.le_password.setEchoMode(QLineEdit.EchoMode.Password)
+
     def _login(self):
         global current_user
         current_user = self.le_account.text().casefold()
         pw = self.le_password.text()
 
         # if uid not found in db --> "no user found"
-        user_list = [i for i in self.curs.execute('''SELECT username FROM registry''').fetchall()[0]]
+        user_list = []
+        for i in self.curs.execute('''SELECT username FROM registry''').fetchall():
+            user_list.append(i[0])
         if current_user not in user_list:
             self.le_account.setText('User not found.')
         # if uid found but bad pw --> "incorrect password"
         else:
             users_pw = self.curs.execute('''SELECT pw FROM registry WHERE username = (?)''', tuple([current_user])).fetchone()[0]
             if pw != users_pw:
+                self.le_password.setEchoMode(QLineEdit.EchoMode.Normal)
                 self.le_password.setText('Incorrect password.')
+               
             else:
                 self.window2 = Menu()
                 self.conn.commit()
@@ -68,6 +78,7 @@ class Register(QMainWindow, Register.Ui_MainWindow):
     #--------define functions---------
     def _cancel(self):
         self.window2 = StartUp()
+        self.conn.close()
         self.close()
         self.window2.show()
 
@@ -106,8 +117,67 @@ class Menu(QWidget, Menu.Ui_Form):
         self.window2.show()
 
     def _lookup(self):
-        # to be coded
-        pass
+        self.window2 = Lookup()
+        self.close()
+        self.window2.show()        
+
+class Lookup(QWidget, lookup.Ui_Dialog):
+    def __init__(self, parent=None):
+        super(Lookup, self).__init__(parent)
+        self.setupUi(self)
+        self.window2 = None
+        self.conn = sqlite3.connect('data/sqlPWS.db')
+        self.cursor = self.conn.cursor()
+        _app_current_user = ['']
+        _user = [current_user]
+        _apps = self.cursor.execute('SELECT DISTINCT app FROM pws WHERE user = (?);', _user).fetchall()
+        for i in _apps:
+            _app_current_user.append(i[0])
+        # buttons
+        self.pb_update.clicked.connect(self._update)
+        self.pb_cp.clicked.connect(self._copy)
+        self.pb_ok.clicked.connect(self._ok)
+        self.pb_check.clicked.connect(self._check)
+        #combo box contents
+        self.cb_app.addItems(_app_current_user)
+        self.cb_app.activated.connect(self._sel_uid)
+        self.cb_uid.currentIndexChanged.connect(self._clear_pw)
+    # functions
+    def _check(self):
+        _cheque = [self.cb_app.currentText() + self.cb_uid.currentText() + current_user]
+        _pw = self.cursor.execute('SELECT pw FROM pws WHERE cheque = (?);', _cheque).fetchone()
+        try:
+            self.lu_pw.setText(_pw[0])
+        except TypeError:
+            pass
+
+    def _sel_uid(self):
+        self.cb_uid.clear()
+        self.lu_pw.clear()
+        _current_app = self.cb_app.currentText()
+        _user_uid = [current_user, _current_app]
+        _current_app_uid = []
+        _uids = self.cursor.execute('SELECT uid FROM pws WHERE user = (?) AND app = (?);', _user_uid).fetchall()
+        for j in _uids:
+            _current_app_uid.append(j[0])
+        self.cb_uid.addItems(_current_app_uid)
+
+    def _clear_pw(self):
+        self.lu_pw.clear()
+
+    def _update(self):
+        self.window2 = Core()
+        self.close()
+        self.window2.show()
+
+    def _copy(self):
+        clipboard = QApplication.clipboard()
+        clipboard.setText(self.lu_pw.text())
+
+    def _ok(self):
+        self.window2 = Menu()
+        self.close()
+        self.window2.show()
 
 class Core(QMainWindow, Ui_MainWindow):
     def __init__(self, parent = None):
@@ -177,7 +247,8 @@ class Core(QMainWindow, Ui_MainWindow):
     # to save the app name, user id, and generated password to database for further access
     def _save(self):
 
-        _comb = [(self.appname_line.text().title() + self.user_id.text().upper(),
+        # the first element is concatenation of app name, user id of the app, and the current user as a primary key to prevent duplicate account of the same app for the current user
+        _comb = [(self.appname_line.text().title() + self.user_id.text().upper() + current_user,
                   self.appname_line.text().title(),
                   self.user_id.text().upper(),
                   self.pws_pw.text(),
@@ -201,9 +272,9 @@ class Core(QMainWindow, Ui_MainWindow):
             # if app name already exists
             except sqlite3.IntegrityError:
                 # code to be filled in
+                self._msg()
                 # ask if overwrite
-                print('duplicate primary key')
-                pass
+                
 
     def _copy(self):
         clipboard = QApplication.clipboard()
@@ -215,11 +286,29 @@ class Core(QMainWindow, Ui_MainWindow):
         self.close()
         self.window2.show()
 
+    def _msg(self):
+        from math import log2
+        # message box pops up if duplicate app name for the same user
+        reply = QMessageBox.question(self, "Existing App", "The username you intended to generate a password for the designated app already exists. Do you want to overwrite its password?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No )
+        # the return values of QMessageBox of standard buttons yes and no are exponents to the base 2, where yes has exponents of 14 and no 16
+        a = int(log2(int(reply)))
+        if a == 14: # if the reply is "YES"
+            # overwrite the password
+            _new_pw = self.pws_pw.text()
+            _new_comb = [_new_pw, current_user, self.appname_line.text().title(), self.user_id.text().upper()]
+            self.cursor.execute('''UPDATE pws
+                                    SET pw = (?)
+                                    WHERE user = (?)
+                                    AND app = (?)
+                                    AND uid = (?);''', _new_comb)
+            self.conn.commit()
+        else:
+            # do nothing, close the message box
+            reply = QMessageBox.about(self, "Information", "Your password has not been udpated.")
+        
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-
     startup = StartUp()
-
     startup.show()
     sys.exit(app.exec())

@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(342, 220)
         MainWindow.setMinimumSize(QtCore.QSize(342, 220))
         MainWindow.setMaximumSize(QtCore.QSize(342, 220))
+        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -40,6 +41,7 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
         self.le_password = QtWidgets.QLineEdit(self.gridLayoutWidget)
+        self.le_password.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.le_password.setObjectName("le_password")
         self.gridLayout.addWidget(self.le_password, 1, 1, 1, 1)
         self.le_account = QtWidgets.QLineEdit(self.gridLayoutWidget)
@@ -75,16 +77,19 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
+        self.setTabOrder(self.le_account, self.le_password)
+        self.setTabOrder(self.le_password, self.pb_login)
+        self.setTabOrder(self.pb_login, self.pb_register)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Password Steward - Login"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "PWS - Login"))
         self.label_2.setText(_translate("MainWindow", "Password :"))
         self.label.setText(_translate("MainWindow", "Username:"))
         self.le_password.setPlaceholderText(_translate("MainWindow", "Password at least 4 digits"))
         self.le_account.setPlaceholderText(_translate("MainWindow", "Enter your username"))
         self.pb_login.setText(_translate("MainWindow", "Login"))
         self.pb_register.setText(_translate("MainWindow", "Register"))
+        

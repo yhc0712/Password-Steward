@@ -15,6 +15,7 @@ class Ui_Form(object):
         Form.resize(310, 140)
         Form.setMinimumSize(QtCore.QSize(310, 140))
         Form.setMaximumSize(QtCore.QSize(310, 140))
+        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
         self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 30, 271, 80))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -52,7 +53,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Password Steward - Menu"))
+        Form.setWindowTitle(_translate("Form", "PWS - Menu"))
         self.pb_gen.setText(_translate("Form", "Generate \n"
 "New Password"))
         self.pb_lu.setText(_translate("Form", "Lookup / Update"))
