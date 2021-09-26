@@ -18,7 +18,7 @@ Password Steward is an application to generate simple or complex passwords to me
 
 ## 1. How to install
 
-Clone the repository from [github](https://github.com/yhc0712/Passward-Steward)
+Clone the repository from [github](https://github.com/yhc0712/Password-Steward)
 
 Start the program by executing `PWS_Main_logic.py`
 
